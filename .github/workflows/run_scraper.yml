@@ -1,0 +1,28 @@
+name: GDELT AI Scraper
+
+on:
+  schedule:
+    - cron: '*/15 * * * *' # Spusti každých 15 minút
+  workflow_dispatch: # Umožní nám to spustiť aj manuálne tlačidlom
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repozitára
+        uses: actions/checkout@v3
+
+      - name: Nastavenie Pythonu
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Inštalácia knižníc
+        run: pip install -r requirements.txt
+
+      - name: Spustenie Dátovej Rúry
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python scraper.py
